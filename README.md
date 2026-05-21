@@ -2,9 +2,6 @@
 ### *Autonomous Multi-Agent AI Coding Agent Platform*
 #### *Repository-Aware Software Engineering System (Work in Progress)*
 
-<p align="center">
-  <img src="docs/assets/banner-placeholder.png" alt="Atlas Banner" width="100%" />
-</p>
 
 <p align="center">
 
