@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { FileTree } from "@/components/code/file-tree";
 import { GlassCard } from "@/components/glass/glass-card";
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import { FileNode } from "@/types";
 import { motion } from "framer-motion";
 import {
@@ -29,8 +30,22 @@ const mockRepo: FileNode[] = [
         type: "directory",
         path: "src/auth",
         children: [
-          { id: "3", name: "oauth.ts", type: "file", path: "src/auth/oauth.ts", language: "typescript", size: 2847 },
-          { id: "4", name: "jwt.ts", type: "file", path: "src/auth/jwt.ts", language: "typescript", size: 1234 },
+          {
+            id: "3",
+            name: "oauth.ts",
+            type: "file",
+            path: "src/auth/oauth.ts",
+            language: "typescript",
+            size: 2847,
+          },
+          {
+            id: "4",
+            name: "jwt.ts",
+            type: "file",
+            path: "src/auth/jwt.ts",
+            language: "typescript",
+            size: 1234,
+          },
         ],
       },
       {
@@ -39,11 +54,32 @@ const mockRepo: FileNode[] = [
         type: "directory",
         path: "src/components",
         children: [
-          { id: "6", name: "Button.tsx", type: "file", path: "src/components/Button.tsx", language: "tsx", size: 892 },
-          { id: "7", name: "Input.tsx", type: "file", path: "src/components/Input.tsx", language: "tsx", size: 654 },
+          {
+            id: "6",
+            name: "Button.tsx",
+            type: "file",
+            path: "src/components/Button.tsx",
+            language: "tsx",
+            size: 892,
+          },
+          {
+            id: "7",
+            name: "Input.tsx",
+            type: "file",
+            path: "src/components/Input.tsx",
+            language: "tsx",
+            size: 654,
+          },
         ],
       },
-      { id: "8", name: "app.ts", type: "file", path: "src/app.ts", language: "typescript", size: 3421 },
+      {
+        id: "8",
+        name: "app.ts",
+        type: "file",
+        path: "src/app.ts",
+        language: "typescript",
+        size: 3421,
+      },
     ],
   },
   {
@@ -64,7 +100,10 @@ const mockRepo: FileNode[] = [
   },
 ];
 
-export default function RepoPage({ params }: { params: { id: string } }) {
+export default function RepoPage() {
+  const params = useParams();
+  const repoId = params?.id as string;
+
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -81,7 +120,11 @@ export default function RepoPage({ params }: { params: { id: string } }) {
             <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-white/5 border border-white/10">
               main
             </span>
+            <span className="text-xs text-accent">
+              Repo #{repoId}
+            </span>
           </div>
+
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Star className="w-3.5 h-3.5" /> 1.2k
@@ -116,6 +159,7 @@ export default function RepoPage({ params }: { params: { id: string } }) {
               <Folder className="w-3.5 h-3.5" />
               <span className="font-medium">EXPLORER</span>
             </div>
+
             <FileTree
               nodes={mockRepo}
               onSelect={setSelectedFile}
@@ -134,14 +178,18 @@ export default function RepoPage({ params }: { params: { id: string } }) {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <FileCode className="w-4 h-4 text-accent" />
-                    <span className="font-mono text-sm">{selectedFile.path}</span>
+                    <span className="font-mono text-sm">
+                      {selectedFile.path}
+                    </span>
                   </div>
+
                   <div className="text-xs text-muted-foreground">
                     {selectedFile.size} bytes • {selectedFile.language}
                   </div>
                 </div>
+
                 <GlassCard className="p-4">
-                  <pre className="font-mono text-sm text-foreground/80 leading-relaxed">
+                  <pre className="font-mono text-sm text-foreground/80 leading-relaxed overflow-x-auto">
                     <code>{`// ${selectedFile.name}
 import { OAuth2Strategy } from 'passport-oauth2';
 import { Request } from 'express';
