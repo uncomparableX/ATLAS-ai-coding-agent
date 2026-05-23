@@ -27,12 +27,11 @@ const navItems = [
 
 export function Sidebar() {
   const { sidebarOpen } = useUIStore();
-  const { clearMessages, resetStatus } = useAgentStore();
+  const { resetTask } = useAgentStore();
   const router = useRouter();
 
   const handleNewTask = () => {
-    if (clearMessages) clearMessages();
-    if (resetStatus) resetStatus();
+    if (resetTask) resetTask();
     router.push("/dashboard");
   };
 
@@ -61,16 +60,15 @@ export function Sidebar() {
       </div>
 
       <div className="p-3">
-        <div onClick={handleNewTask} className="block w-full cursor-pointer">
-          <GlowButton
-            variant="primary"
-            size={sidebarOpen ? "md" : "sm"}
-            className={cn("w-full justify-center", !sidebarOpen && "px-2")}
-          >
-            <Plus className="w-4 h-4 shrink-0" />
-            {sidebarOpen && <span>New Task</span>}
-          </GlowButton>
-        </div>
+        <GlowButton
+          variant="primary"
+          size={sidebarOpen ? "md" : "sm"}
+          className={cn("w-full justify-center", !sidebarOpen && "px-2")}
+          onClick={handleNewTask}
+        >
+          <Plus className="w-4 h-4 shrink-0" />
+          {sidebarOpen && <span>New Task</span>}
+        </GlowButton>
       </div>
 
       <nav className="flex-1 px-3 py-2 space-y-1">
