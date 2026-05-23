@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/lib/stores/ui-store";
+import { useAgentStore } from "@/lib/stores/agent-store";
 import { motion } from "framer-motion";
 import {
   GitBranch,
@@ -13,26 +14,35 @@ import {
   Search,
 } from "lucide-react";
 import { GlowButton } from "@/components/glass/glow-button";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-  { icon: GitBranch, label: "Repositories", href: "/repo" },
-  { icon: MessageSquare, label: "Agents", href: "/agent" },
+  { icon: GitBranch, label: "Repositories", href: "/repositories" },
+  { icon: MessageSquare, label: "Agents", href: "/agents" },
   { icon: BarChart3, label: "Analytics", href: "/analytics" },
   { icon: Settings, label: "Settings", href: "/settings" },
 ];
 
 export function Sidebar() {
-  const { sidebarOpen, toggleSidebar } = useUIStore();
+  const { sidebarOpen } = useUIStore();
+  const { clearMessages, resetStatus } = useAgentStore();
+  const router = useRouter();
+
+  const handleNewTask = () => {
+    if (clearMessages) clearMessages();
+    if (resetStatus) resetStatus();
+    router.push("/dashboard");
+  };
 
   return (
     <motion.aside
       initial={false}
       animate={{ width: sidebarOpen ? 260 : 72 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="glass-panel border-r border-border flex flex-col shrink-0 z-20"
+      className="glass-panel border-r border-border flex flex-col shrink-0 z-20 bg-background/50 backdrop-blur-sm"
     >
-      {/* Logo */}
       <div className="h-14 flex items-center px-4 border-b border-border">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent-secondary flex items-center justify-center shrink-0">
@@ -42,30 +52,30 @@ export function Sidebar() {
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="font-semibold text-foreground"
+              className="font-semibold text-foreground tracking-wide"
             >
-              Agentic
+              ATLAS
             </motion.span>
           )}
         </div>
       </div>
 
-      {/* New Task */}
       <div className="p-3">
-        <GlowButton
-          variant="primary"
-          size={sidebarOpen ? "md" : "sm"}
-          className={cn("w-full justify-center", !sidebarOpen && "px-2")}
-        >
-          <Plus className="w-4 h-4 shrink-0" />
-          {sidebarOpen && <span>New Task</span>}
-        </GlowButton>
+        <div onClick={handleNewTask} className="block w-full cursor-pointer">
+          <GlowButton
+            variant="primary"
+            size={sidebarOpen ? "md" : "sm"}
+            className={cn("w-full justify-center", !sidebarOpen && "px-2")}
+          >
+            <Plus className="w-4 h-4 shrink-0" />
+            {sidebarOpen && <span>New Task</span>}
+          </GlowButton>
+        </div>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 px-3 py-2 space-y-1">
         {navItems.map((item) => (
-          <a
+          <Link
             key={item.label}
             href={item.href}
             className={cn(
@@ -76,11 +86,10 @@ export function Sidebar() {
           >
             <item.icon className="w-4 h-4 shrink-0 group-hover:text-accent transition-colors" />
             {sidebarOpen && <span>{item.label}</span>}
-          </a>
+          </Link>
         ))}
       </nav>
 
-      {/* Search */}
       <div className="p-3 border-t border-border">
         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] text-muted-foreground text-sm">
           <Search className="w-4 h-4 shrink-0" />
